@@ -62,6 +62,19 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      animation: {
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
+        float: "float 6s ease-in-out infinite",
+        "fade-in-up": "fadeInUp 0.8s ease-out forwards",
+        "slide-up": "slideUp 0.6s ease-out forwards",
+        "scale-in": "scaleIn 0.5s ease-out forwards",
+        "slide-in-left": "slideInLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+        "slide-in-right": "slideInRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+        "blur-in": "blurIn 0.6s ease-out forwards",
+        "glow-pulse": "glowPulse 3s ease-in-out infinite",
+        shimmer: "shimmer 2.5s ease-in-out infinite",
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
@@ -87,14 +100,26 @@ export default {
           from: { opacity: "0", transform: "scale(0.95)" },
           to: { opacity: "1", transform: "scale(1)" },
         },
-      },
-      animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
-        float: "float 6s ease-in-out infinite",
-        "fade-in-up": "fadeInUp 0.8s ease-out forwards",
-        "slide-up": "slideUp 0.6s ease-out forwards",
-        "scale-in": "scaleIn 0.5s ease-out forwards",
+        slideInLeft: {
+          from: { opacity: "0", transform: "translateX(-60px)" },
+          to: { opacity: "1", transform: "translateX(0)" },
+        },
+        slideInRight: {
+          from: { opacity: "0", transform: "translateX(60px)" },
+          to: { opacity: "1", transform: "translateX(0)" },
+        },
+        blurIn: {
+          from: { opacity: "0", filter: "blur(10px)" },
+          to: { opacity: "1", filter: "blur(0)" },
+        },
+        glowPulse: {
+          "0%, 100%": { boxShadow: "0 0 20px hsl(207 90% 54% / 0.3)" },
+          "50%": { boxShadow: "0 0 40px hsl(207 90% 54% / 0.5)" },
+        },
+        shimmer: {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
       },
     },
   },
