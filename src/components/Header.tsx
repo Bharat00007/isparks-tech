@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 import isparksLogo from '@/assets/isparks-logo-new.png';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -15,11 +17,20 @@ const Header = () => {
   }, []);
 
   const navLinks = [
-    { name: 'Home', href: '#home' },
-    { name: 'About', href: '#about' },
-    { name: 'IT services', href: '#services' },
-    { name: 'Contact us', href: '#contact' },
+    { name: 'Home', href: '#home', isRoute: false },
+    { name: 'About', href: '#about', isRoute: false },
+    { name: 'IT services', href: '#services', isRoute: false },
+    { name: 'Blogs', href: '/blogs', isRoute: true },
+    { name: 'Contact us', href: '#contact', isRoute: false },
   ];
+
+  const handleHashClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    // If we're not on the home page, navigate there first
+    if (location.pathname !== '/') {
+      e.preventDefault();
+      window.location.href = '/' + href;
+    }
+  };
 
   return (
     <header
@@ -32,25 +43,37 @@ const Header = () => {
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex items-center justify-between h-24">
           {/* Logo */}
-          <div className="flex items-center">
+          <Link to="/" className="flex items-center">
             <img 
               src={isparksLogo} 
               alt="iSparks Technologies" 
               className="h-20 w-auto object-contain transition-transform duration-300 hover:scale-105"
             />
-          </div>
+          </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden md:flex items-center gap-8 relative z-10">
             {navLinks.map((link, index) => (
-              <a
-                key={link.name}
-                href={link.href}
-                className="nav-link text-sm"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                {link.name}
-              </a>
+              link.isRoute ? (
+                <Link
+                  key={link.name}
+                  to={link.href}
+                  className="nav-link text-sm cursor-pointer select-none"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  {link.name}
+                </Link>
+              ) : (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  className="nav-link text-sm cursor-pointer select-none"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                  onClick={(e) => handleHashClick(e, link.href)}
+                >
+                  {link.name}
+                </a>
+              )
             ))}
           </nav>
 
@@ -67,21 +90,38 @@ const Header = () => {
         {/* Mobile Navigation */}
         <nav 
           className={`md:hidden overflow-hidden transition-all duration-500 ease-out ${
-            isMobileMenuOpen ? 'max-h-64 opacity-100 py-4' : 'max-h-0 opacity-0'
+            isMobileMenuOpen ? 'max-h-80 opacity-100 py-4' : 'max-h-0 opacity-0'
           } border-t border-border/50`}
         >
           {navLinks.map((link, index) => (
-            <a
-              key={link.name}
-              href={link.href}
-              className={`block py-3 nav-link text-sm transition-all duration-300 ${
-                isMobileMenuOpen ? 'translate-x-0 opacity-100' : '-translate-x-4 opacity-0'
-              }`}
-              style={{ transitionDelay: isMobileMenuOpen ? `${index * 75}ms` : '0ms' }}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              {link.name}
-            </a>
+            link.isRoute ? (
+              <Link
+                key={link.name}
+                to={link.href}
+                className={`block py-3 nav-link text-sm cursor-pointer transition-all duration-300 ${
+                  isMobileMenuOpen ? 'translate-x-0 opacity-100' : '-translate-x-4 opacity-0'
+                }`}
+                style={{ transitionDelay: isMobileMenuOpen ? `${index * 75}ms` : '0ms' }}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {link.name}
+              </Link>
+            ) : (
+              <a
+                key={link.name}
+                href={link.href}
+                className={`block py-3 nav-link text-sm cursor-pointer transition-all duration-300 ${
+                  isMobileMenuOpen ? 'translate-x-0 opacity-100' : '-translate-x-4 opacity-0'
+                }`}
+                style={{ transitionDelay: isMobileMenuOpen ? `${index * 75}ms` : '0ms' }}
+                onClick={(e) => {
+                  handleHashClick(e, link.href);
+                  setIsMobileMenuOpen(false);
+                }}
+              >
+                {link.name}
+              </a>
+            )
           ))}
         </nav>
       </div>

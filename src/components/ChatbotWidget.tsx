@@ -84,7 +84,7 @@ Let's bring your app idea to life!`,
 
   contact: `📞 Contact Us
 
-• WhatsApp: +65 8215 4249
+• WhatsApp: +65 9185 0551
 • Email: info@isparks.com
 • Location: Singapore
 
@@ -330,7 +330,7 @@ const ChatbotWidget = ({ isOpen, onClose }: ChatbotWidgetProps) => {
           </Button>
         </div>
         <p className="text-xs text-slate-500 mt-3 text-center">
-          Need human help? <a href="https://wa.me/6582154249" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Chat on WhatsApp</a>
+          Need human help? <a href="https://wa.me/6591850551" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Chat on WhatsApp</a>
         </p>
       </div>
     </div>
