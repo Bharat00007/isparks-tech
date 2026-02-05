@@ -102,10 +102,10 @@ const AboutSection = () => {
             {/* Company Description */}
             <div className="about-container p-6 lg:p-8">
               <p className="text-base md:text-lg text-white/90 leading-relaxed mb-6">
-                <span className="text-2xl font-bold text-white">iSparks Technologies</span> is an IT services company delivering secure, scalable, and AI-enabled technology solutions. We help organizations improve efficiency, enhance decision-making, and stay competitive through intelligent IT systems.
+                <span className="text-2xl font-bold text-amber-300">iSparks Technologies</span> is an IT services company delivering secure, scalable, and <span className="text-amber-300 font-semibold">AI-enabled</span> technology solutions. We help organizations improve efficiency, enhance decision-making, and stay competitive through <span className="text-amber-300 font-semibold">intelligent IT systems</span>.
               </p>
               <p className="text-base md:text-lg text-white/80 leading-relaxed">
-                By combining strong technical expertise with practical business insight, we integrate AI across IT operations to drive automation, performance, and growth. Our focus is on delivering reliable, future-ready IT services.
+                By combining strong technical expertise with practical business insight, we integrate <span className="text-amber-300 font-semibold">AI</span> across IT operations to drive <span className="text-amber-300 font-semibold">automation</span>, performance, and growth. Our focus is on delivering reliable, <span className="text-amber-300 font-semibold">future-ready IT services</span>.
               </p>
             </div>
 

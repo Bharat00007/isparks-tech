@@ -1,10 +1,6 @@
-import { useState } from 'react';
-import { MessageCircle, X } from 'lucide-react';
-import ChatbotWidget from './ChatbotWidget';
+import { MessageCircle } from 'lucide-react';
 
 const FloatingButtons = () => {
-  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
-  
   const whatsappNumber = '6582154249';
   const whatsappUrl = `https://wa.me/${whatsappNumber}`;
 
@@ -31,33 +27,18 @@ const FloatingButtons = () => {
         </span>
       </a>
 
-      {/* Chatbot Floating Button */}
-      <button
-        onClick={() => setIsChatbotOpen(!isChatbotOpen)}
-        className={`fixed bottom-24 right-6 z-50 w-14 h-14 rounded-full shadow-[0_4px_20px_-4px_hsl(207_90%_54%/0.5)] flex items-center justify-center transition-all duration-400 hover:scale-110 hover:-translate-y-1 group animate-fade-in-up ${
-          isChatbotOpen 
-            ? 'bg-slate-800 hover:shadow-[0_8px_30px_-4px_hsl(210_50%_20%/0.6)]' 
-            : 'bg-primary hover:shadow-[0_8px_30px_-4px_hsl(207_90%_54%/0.6)]'
-        }`}
+      {/* Chatbot Floating Button (disabled) */}
+      <div
+        className="fixed bottom-24 right-6 z-50 w-14 h-14 rounded-full shadow-[0_4px_20px_-4px_hsl(207_90%_54%/0.5)] flex items-center justify-center bg-primary animate-fade-in-up"
         style={{ animationDelay: '0.6s', animationFillMode: 'forwards' }}
-        aria-label="Open iSparks AI chat"
+        aria-label="iSparks AI chat"
       >
-        <div className={`transition-transform duration-300 ${isChatbotOpen ? 'rotate-90' : 'rotate-0'}`}>
-          {isChatbotOpen ? (
-            <X className="w-6 h-6 text-white" />
-          ) : (
-            <MessageCircle className="w-6 h-6 text-white" />
-          )}
-        </div>
-        {!isChatbotOpen && (
-          <span className="absolute right-full mr-3 bg-foreground text-background text-sm px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap shadow-lg translate-x-2 group-hover:translate-x-0">
-            iSparks AI
-          </span>
-        )}
-      </button>
+        <MessageCircle className="w-6 h-6 text-white" />
+        <span className="absolute right-full mr-3 bg-foreground text-background text-sm px-3 py-1.5 rounded-lg opacity-0 whitespace-nowrap shadow-lg">
+          iSparks AI
+        </span>
+      </div>
 
-      {/* Chatbot Window */}
-      <ChatbotWidget isOpen={isChatbotOpen} onClose={() => setIsChatbotOpen(false)} />
     </>
   );
 };

@@ -1,5 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
-import { Check } from 'lucide-react';
+ import { useState, useEffect, useRef } from 'react';
+ import { Check, Loader2 } from 'lucide-react';
+ import { supabase } from '@/integrations/supabase/client';
+ import { toast } from '@/hooks/use-toast';
 
 const serviceOptions = [
   'AI Chatbot',
@@ -21,6 +23,7 @@ const ContactSection = () => {
     message: '',
   });
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -39,10 +42,59 @@ const ContactSection = () => {
     return () => observer.disconnect();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Add form submission logic here
+     
+     if (!formData.fullName || !formData.email) {
+       toast({
+         title: "Error",
+         description: "Please fill in required fields",
+         variant: "destructive",
+       });
+       return;
+     }
+ 
+     setIsSubmitting(true);
+     
+     try {
+       const { data, error } = await supabase.functions.invoke('send-enquiry', {
+         body: {
+           fullName: formData.fullName,
+           email: formData.email,
+           phone: formData.phone,
+           company: formData.company,
+           service: formData.service,
+           message: formData.message,
+           source: 'contact',
+         },
+       });
+ 
+       if (error) throw error;
+ 
+       toast({
+         title: "Success!",
+         description: "Your enquiry has been sent. We'll get back to you shortly.",
+       });
+ 
+       // Reset form
+       setFormData({
+         fullName: '',
+         email: '',
+         phone: '',
+         company: '',
+         service: '',
+         message: '',
+       });
+     } catch (error: any) {
+       console.error('Error submitting form:', error);
+       toast({
+         title: "Error",
+         description: "Failed to send enquiry. Please try again.",
+         variant: "destructive",
+       });
+     } finally {
+       setIsSubmitting(false);
+     }
   };
 
   return (
@@ -163,9 +215,17 @@ const ContactSection = () => {
               {/* Submit Button */}
               <button
                 type="submit"
-                className="btn-primary w-full md:w-auto ripple-effect hover:shadow-[0_12px_40px_-8px_hsl(207_90%_54%/0.5)]"
+                 className="btn-primary w-full md:w-auto ripple-effect hover:shadow-[0_12px_40px_-8px_hsl(207_90%_54%/0.5)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                 disabled={isSubmitting}
               >
-                Submit Enquiry
+                 {isSubmitting ? (
+                   <>
+                     <Loader2 className="w-4 h-4 animate-spin" />
+                     Sending...
+                   </>
+                 ) : (
+                   'Submit Enquiry'
+                 )}
               </button>
             </form>
           </div>

@@ -1,8 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
 @layer base {
   :root {
@@ -166,6 +166,25 @@
     backdrop-filter: blur(8px);
   }
 
+  /* Navy blue overlay for sections (matches hero transparency) */
+  .section-overlay {
+    position: relative;
+  }
+
+  .section-overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, hsl(215, 50%, 12% / 0.92) 0%, hsl(215, 45%, 15% / 0.88) 50%, hsl(210, 40%, 18% / 0.85) 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .section-overlay > * {
+    position: relative;
+    z-index: 1;
+  }
+
   .glass-card {
     background: hsl(var(--isparks-white) / 0.12);
     backdrop-filter: blur(16px);
@@ -279,6 +298,9 @@
     @apply text-[hsl(var(--isparks-nav-text))] font-medium;
     position: relative;
     transition: color 0.3s ease;
+    cursor: pointer;
+    display: inline-block;
+    padding: 0.25rem 0;
   }
 
   .nav-link::after {
@@ -290,6 +312,7 @@
     height: 2px;
     background: linear-gradient(90deg, hsl(207 90% 54%), hsl(45 93% 58%));
     transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
   }
 
   .nav-link:hover {
@@ -442,5 +465,77 @@
 
   .animate-marquee:hover {
     animation-play-state: paused;
+  }
+
+  /* Blog Content Styles */
+  .blog-h2 {
+    @apply text-2xl md:text-3xl font-bold mt-10 mb-4;
+    color: hsl(45, 93%, 58%);
+  }
+
+  .blog-h3 {
+    @apply text-xl font-bold mt-6 mb-3 text-white;
+  }
+
+  .blog-p {
+    @apply leading-relaxed mb-4;
+    color: hsl(0, 0%, 90%);
+  }
+
+  .blog-p strong {
+    color: hsl(45, 93%, 58%);
+    font-weight: 600;
+  }
+
+  .blog-ul, .blog-ol {
+    @apply pl-6 mb-6 space-y-2;
+    color: hsl(0, 0%, 85%);
+  }
+
+  .blog-ul {
+    list-style-type: disc;
+  }
+
+  .blog-ol {
+    list-style-type: decimal;
+  }
+
+  .blog-li, .blog-li-ordered {
+    @apply leading-relaxed;
+  }
+
+  .blog-li::marker {
+    color: hsl(45, 93%, 58%);
+  }
+
+  .blog-li-ordered::marker {
+    color: hsl(45, 93%, 58%);
+  }
+
+  .blog-image-container {
+    @apply my-6 rounded-xl overflow-hidden;
+    background: hsl(var(--isparks-white) / 0.05);
+  }
+
+  .blog-section-image {
+    @apply w-full h-auto object-cover;
+    max-height: 300px;
+    transition: transform 0.5s ease, opacity 0.3s ease;
+  }
+
+  .blog-section-image:hover {
+    transform: scale(1.02);
+  }
+
+  /* Scroll Animation Classes */
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+
+  .animate-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
