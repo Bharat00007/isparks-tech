@@ -79,8 +79,8 @@ const Footer = () => {
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground mb-1">Email</p>
-                    <a href="mailto:sales@isparkstech.com" className="text-foreground font-medium text-sm hover:text-primary transition-colors break-all">
-                      sales@isparkstech.com
+                    <a href="mailto:contact@isparkstech.com" className="text-foreground font-medium text-sm hover:text-primary transition-colors break-all">
+                      contact@isparkstech.com
                     </a>
                   </div>
                 </li>
