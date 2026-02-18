@@ -14,7 +14,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 
 const services = [
@@ -171,7 +170,7 @@ const ServicesSection = () => {
   };
 
   const handleWhatsAppRedirect = (type: 'rfq' | 'enquiry') => {
-    // Submit enquiry to backend Supabase Function which sends email via SMTP
+    // Submit enquiry to backend Netlify Function which sends email via SMTP
     const { name, email, phone, company, message } = enquiryForm;
     const svc = selectedTitle || 'Service Enquiry';
     if (!name || !email) {
@@ -186,8 +185,12 @@ const ServicesSection = () => {
     (async () => {
       setIsSubmitting(true);
       try {
-        const { data, error } = await supabase.functions.invoke('send-enquiry', {
-          body: {
+        const response = await fetch('/.netlify/functions/send-enquiry', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
             fullName: name,
             email,
             phone,
@@ -196,10 +199,20 @@ const ServicesSection = () => {
             message,
             source: 'services',
             intent: type,
-          },
+          }),
         });
 
-        if (error) throw error;
+        let result: any = {};
+        const text = await response.text();
+        if (text) {
+          try {
+            result = JSON.parse(text);
+          } catch {
+            result = { text };
+          }
+        }
+
+        if (!response.ok) throw new Error(result.error || result.message || 'Failed to send enquiry');
 
         toast({
           title: 'Success',
@@ -216,7 +229,7 @@ const ServicesSection = () => {
         console.error('Error sending enquiry from services modal:', err);
         toast({
           title: 'Error',
-          description: 'Failed to send enquiry. Please try again later.',
+          description: err.message || 'Failed to send enquiry. Please try again later.',
           variant: 'destructive',
         });
       } finally {

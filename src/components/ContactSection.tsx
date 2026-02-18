@@ -1,7 +1,6 @@
- import { useState, useEffect, useRef } from 'react';
- import { Check, Loader2 } from 'lucide-react';
- import { supabase } from '@/integrations/supabase/client';
- import { toast } from '@/hooks/use-toast';
+import { useState, useEffect, useRef } from 'react';
+import { Check, Loader2 } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
 const serviceOptions = [
   'AI Chatbot',
@@ -42,60 +41,67 @@ const ContactSection = () => {
     return () => observer.disconnect();
   }, []);
 
-   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-     
-     if (!formData.fullName || !formData.email) {
-       toast({
-         title: "Error",
-         description: "Please fill in required fields",
-         variant: "destructive",
-       });
-       return;
-     }
- 
-     setIsSubmitting(true);
-     
-     try {
-       const { data, error } = await supabase.functions.invoke('send-enquiry', {
-         body: {
-           fullName: formData.fullName,
-           email: formData.email,
-           phone: formData.phone,
-           company: formData.company,
-           service: formData.service,
-           message: formData.message,
-           source: 'contact',
-         },
-       });
- 
-       if (error) throw error;
- 
-       toast({
-         title: "Success!",
-         description: "Your enquiry has been sent. We'll get back to you shortly.",
-       });
- 
-       // Reset form
-       setFormData({
-         fullName: '',
-         email: '',
-         phone: '',
-         company: '',
-         service: '',
-         message: '',
-       });
-     } catch (error: any) {
-       console.error('Error submitting form:', error);
-       toast({
-         title: "Error",
-         description: "Failed to send enquiry. Please try again.",
-         variant: "destructive",
-       });
-     } finally {
-       setIsSubmitting(false);
-     }
-  };
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+   
+   if (!formData.fullName || !formData.email) {
+     toast({
+       title: "Error",
+       description: "Please fill in required fields",
+       variant: "destructive",
+     });
+     return;
+   }
+
+   setIsSubmitting(true);
+   
+   
+   try {
+     const response = await fetch('/.netlify/functions/send-enquiry', {
+       method: 'POST',
+       headers: {
+         'Content-Type': 'application/json',
+       },
+       body: JSON.stringify({
+         fullName: formData.fullName,
+         email: formData.email,
+         phone: formData.phone,
+         company: formData.company,
+         service: formData.service,
+         message: formData.message,
+         source: 'contact',
+       }),
+     });
+
+     const result = await response.json();
+
+     if (!response.ok) throw new Error(result.error || 'Failed to send enquiry');
+
+     toast({
+       title: "Success!",
+       description: "Your enquiry has been sent. We'll get back to you shortly.",
+     });
+
+     // Reset form
+     setFormData({
+       fullName: '',
+       email: '',
+       phone: '',
+       company: '',
+       service: '',
+       message: '',
+     });
+   } catch (error: any) {
+     console.error('Error submitting form:', error);
+     toast({
+       title: "Error",
+       description: error.message || "Failed to send enquiry. Please try again.",
+       variant: "destructive",
+     });
+   } finally {
+     setIsSubmitting(false);
+   }
+};
 
   return (
     <section id="contact" ref={sectionRef} className="py-20 bg-transparent">

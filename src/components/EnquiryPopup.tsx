@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { X, Check } from 'lucide-react';
- import { Loader2 } from 'lucide-react';
- import { supabase } from '@/integrations/supabase/client';
- import { toast } from '@/hooks/use-toast';
+import { Loader2 } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
 const serviceOptions = [
   'AI Chatbot',
@@ -60,43 +59,57 @@ const EnquiryPopup = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-   const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (validateForm()) {
-       setIsSubmitting(true);
-       
-       try {
-         const { data, error } = await supabase.functions.invoke('send-enquiry', {
-           body: {
-             fullName: formData.fullName,
-             email: formData.email,
-             phone: formData.phone,
-             company: formData.companyName,
-             service: formData.service,
-             message: formData.message,
-             source: 'popup',
-           },
-         });
- 
-         if (error) throw error;
- 
-         setIsSubmitted(true);
-         
-         // Auto close after 3 seconds
-         setTimeout(() => {
-           setIsOpen(false);
-         }, 3000);
-       } catch (error: any) {
-         console.error('Error submitting popup form:', error);
-         toast({
-           title: "Error",
-           description: "Failed to send enquiry. Please try again.",
-           variant: "destructive",
-         });
-       } finally {
-         setIsSubmitting(false);
-       }
+      setIsSubmitting(true);
+      
+      try {
+        const response = await fetch('/.netlify/functions/send-enquiry', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            fullName: formData.fullName,
+            email: formData.email,
+            phone: formData.phone,
+            company: formData.companyName,
+            service: formData.service,
+            message: formData.message,
+            source: 'popup',
+          }),
+        });
+
+        let result: any = {};
+        const text = await response.text();
+        if (text) {
+          try {
+            result = JSON.parse(text);
+          } catch {
+            result = { text };
+          }
+        }
+
+        if (!response.ok) throw new Error(result.error || result.message || 'Failed to send enquiry');
+
+        setIsSubmitted(true);
+        
+        // Auto close after 3 seconds
+        setTimeout(() => {
+          setIsOpen(false);
+        }, 3000);
+      } catch (error: any) {
+        console.error('Error submitting popup form:', error);
+        toast({
+          title: "Error",
+          description: error.message || "Failed to send enquiry. Please try again.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
