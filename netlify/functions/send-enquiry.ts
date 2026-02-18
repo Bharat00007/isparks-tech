@@ -51,12 +51,25 @@ export const handler = async (event: NetlifyEvent) => {
       };
     }
 
-    // Get environment variables - use provided credentials as fallback
-    const smtpHost = process.env.SMTP_HOST || 'smtp.hostinger.com';
-    const smtpPort = parseInt(process.env.SMTP_PORT || '587');
-    const smtpUser = process.env.SMTP_USER || 'sales@isparkstech.com';
-    const smtpPassword = process.env.SMTP_PASSWORD || 'iSparks_tech@31';
-    const recipientEmail = process.env.EMAIL_ADDRESS || 'sales@isparkstech.com';
+    // Read environment variables (do NOT hardcode secrets here)
+    const smtpHost = process.env.SMTP_HOST;
+    const smtpPort = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT) : undefined;
+    const smtpUser = process.env.SMTP_USER;
+    const smtpPassword = process.env.SMTP_PASSWORD;
+    const recipientEmail = process.env.RECIPIENT_EMAIL || process.env.EMAIL_ADDRESS;
+
+    // Fail early if SMTP is not configured to avoid leaking values into build
+    if (!smtpHost || !smtpPort || !smtpUser || !smtpPassword || !recipientEmail) {
+      console.error('SMTP configuration missing. Ensure SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD and RECIPIENT_EMAIL (or EMAIL_ADDRESS) are set.');
+      return {
+        statusCode: 500,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+        body: JSON.stringify({ error: 'SMTP configuration missing on server' }),
+      };
+    }
 
     // Create transporter
     const transporter = nodemailer.createTransport({
